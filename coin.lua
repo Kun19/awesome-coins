@@ -29,7 +29,7 @@ local function factory(args)
     local percentage_delta      = args.percentage_delta or "24h"
     -- see lain or examples in README
     local settings              = args.settings or function() end
-    local api_call              = "curl -s https://api.coinmarketcap.com/v1/ticker/%s/"
+    local api_call              = 'curl -s "https://api.coingecko.com/api/v3/simple/price?ids=%s&vs_currencies=USD&include_24hr_change=true"'
 
     coin.widget:set_markup(na_markup)
 
@@ -39,8 +39,8 @@ local function factory(args)
             data, pos, err = json.decode(response, 1, nil)
 
             if data ~= nil then
-                value = tonumber(data[1]["price_usd"])
-                change = data[1][string.format("percent_change_%s", percentage_delta)]
+                value = tonumber(data[crypto]["usd"])
+                change = string.format("%.2f",data[crypto]["usd_24h_change"])
 
                 if value > 1000 then
                     value = string.format("%.2fK", value/1000)
